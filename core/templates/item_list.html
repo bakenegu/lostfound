@@ -1,48 +1,69 @@
 {% extends 'base.html' %}
 {% block content %}
+
 {% if messages %}
   {% for message in messages %}
-    <div class="alert alert-{{ message.tags }}">
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
         {{ message|safe }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
   {% endfor %}
 {% endif %}
 
-<h3>Browse Lost & Found Items</h3>
-<form method="get" class="mb-3">
-    <input type="text" name="q" class="form-control" placeholder="Search by keyword..." value="{{ query }}">
+<div class="text-center mb-4">
+  <h2 class="fw-bold">🔍 Browse Lost & Found Items</h2>
+  <p class="text-muted">Search or scroll to find reported items. Click on an item to view more details.</p>
+</div>
+
+<form method="get" class="mb-4">
+  <div class="input-group">
+    <input type="text" name="q" class="form-control" placeholder="Search by keyword (e.g. 'wallet')" value="{{ query }}">
+    <button class="btn btn-outline-primary" type="submit">Search</button>
+  </div>
 </form>
 
 <div class="row">
-    <div class="col-md-6">
-        <h5>Lost Items</h5>
-        {% for item in lost_items %}
-            <div class="card mb-2">
-                <div class="card-body">
-                    <strong>{{ item.title }}</strong> - {{ item.description }}<br>
-                    <small>{{ item.date_lost }} @ {{ item.location }}</small>
-                </div>
-            </div>
-        {% empty %}
-            <p>No lost items found.</p>
-        {% endfor %}
-    </div>
+  <!-- Lost Items Section -->
+  <div class="col-md-6">
+    <h4 class="mb-3 text-danger">🧳 Lost Items</h4>
+    {% for item in lost_items %}
+      <div class="card shadow-sm mb-3 border-start border-4 border-danger">
+        <div class="card-body">
+          <h5 class="card-title">{{ item.title }}</h5>
+          <p class="card-text text-muted">{{ item.description }}</p>
+          <ul class="list-unstyled small">
+            <li><strong>📍 Location:</strong> {{ item.location }}</li>
+            <li><strong>📅 Date Lost:</strong> {{ item.date_lost }}</li>
+            <li><strong>📞 Contact:</strong> {{ item.contact_info }}</li>
+          </ul>
+        </div>
+      </div>
+    {% empty %}
+      <p class="text-muted">No lost items found.</p>
+    {% endfor %}
+  </div>
 
-    <div class="col-md-6">
-        <h5>Found Items</h5>
-        {% for item in found_items %}
-            <div class="card mb-2">
-                <div class="card-body">
-                    <strong>{{ item.title }}</strong> - {{ item.description }}<br>
-                    <small>{{ item.location }}</small><br>
-                    {% if item.photo %}
-                        <img src="{{ item.photo.url }}" width="100">
-                    {% endif %}
-                </div>
-            </div>
-        {% empty %}
-            <p>No found items reported.</p>
-        {% endfor %}
-    </div>
+  <!-- Found Items Section -->
+  <div class="col-md-6">
+    <h4 class="mb-3 text-success">📦 Found Items</h4>
+    {% for item in found_items %}
+      <div class="card shadow-sm mb-3 border-start border-4 border-success">
+        <div class="card-body">
+          <h5 class="card-title">{{ item.title }}</h5>
+          <p class="card-text text-muted">{{ item.description }}</p>
+          <ul class="list-unstyled small">
+            <li><strong>📍 Location Found:</strong> {{ item.location }}</li>
+            <li><strong>🕒 Reported:</strong> {{ item.timestamp|date:"M d, Y H:i" }}</li>
+          </ul>
+          {% if item.photo %}
+            <img src="{{ item.photo.url }}" alt="Found item photo" class="img-thumbnail mt-2" width="120">
+          {% endif %}
+        </div>
+      </div>
+    {% empty %}
+      <p class="text-muted">No found items reported.</p>
+    {% endfor %}
+  </div>
 </div>
+
 {% endblock %}
