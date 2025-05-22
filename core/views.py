@@ -7,9 +7,26 @@ from django.contrib import messages
 from django.urls import reverse  # ✅ for reverse('item_list')
 from .models import Match
 from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import login
 
 def home(request):
     return render(request, 'home.html')
+
+
+def custom_login(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            if user.is_superuser:
+                return redirect('admin_panel')
+            else:
+                return redirect('home')
+    else:
+        form = AuthenticationForm()
+    return render(request, 'core/login.html', {'form': form})
 
 @login_required
 def report_lost(request):
