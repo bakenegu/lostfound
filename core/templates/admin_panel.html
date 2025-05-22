@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2 class="mb-4">Admin Panel: Manage Lost & Found Items</h2>
+
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+      {{ message|safe }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  {% endfor %}
+{% endif %}
+
+<h4>Lost Items</h4>
+{% for item in lost_items %}
+  <div class="card mb-3">
+    <div class="card-body">
+      <strong>{{ item.title }}</strong> - {{ item.description }}<br>
+      <small>{{ item.date_lost }} | Location: {{ item.location }}</small><br>
+      <form method="post" class="mt-2 d-inline">
+        {% csrf_token %}
+        <input type="hidden" name="delete_lost" value="{{ item.id }}">
+        <button class="btn btn-sm btn-danger">Delete</button>
+      </form>
+    </div>
+  </div>
+{% empty %}
+  <p>No lost items reported.</p>
+{% endfor %}
+
+<hr>
+
+<h4>Found Items</h4>
+{% for item in found_items %}
+  <div class="card mb-3">
+    <div class="card-body">
+      <strong>{{ item.title }}</strong> - {{ item.description }}<br>
+      <small>Location: {{ item.location }}</small><br>
+      {% if item.photo %}
+        <img src="{{ item.photo.url }}" width="100" class="my-2">
+      {% endif %}
+      <form method="post" class="mt-2 d-inline">
+        {% csrf_token %}
+        <input type="hidden" name="delete_found" value="{{ item.id }}">
+        <button class="btn btn-sm btn-danger">Delete</button>
+      </form>
+    </div>
+  </div>
+{% empty %}
+  <p>No found items reported.</p>
+{% endfor %}
+
+{% endblock %}
