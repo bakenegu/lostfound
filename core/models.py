@@ -15,6 +15,13 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return f"{self.user.username} ({self.role})"
+    @property
+    def match_count(self):
+        from .models import Match  # local import to avoid circular import
+        return Match.objects.filter(
+            models.Q(lost_item__user=self.user) |
+            models.Q(found_item__user=self.user)
+        ).count()
 
 class LostItem(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
