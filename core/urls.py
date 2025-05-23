@@ -11,4 +11,5 @@ urlpatterns = [
     path('found/', views.report_found, name='report_found'),
     path('items/', views.item_list, name='item_list'),
     path('admin-panel/', views.admin_panel, name='admin_panel'),
+    path('notifications/', views.notification_page, name='notifications'),
 ]

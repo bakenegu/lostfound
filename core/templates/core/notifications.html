@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h3 class="mb-4">🔔 Match Notifications</h3>
+
+{% if matches %}
+  {% for match in matches %}
+    <div class="card mb-3 shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">🧾 Matched Items</h5>
+        <p><strong>Lost:</strong> {{ match.lost_item.title }} — {{ match.lost_item.description }}</p>
+        <p><strong>Found:</strong> {{ match.found_item.title }} — {{ match.found_item.description }}</p>
+        <p class="small text-muted">Matched on: {{ match.timestamp|date:"M d, Y H:i" }}</p>
+      </div>
+    </div>
+  {% endfor %}
+{% else %}
+  <p class="text-muted">No matched items yet.</p>
+{% endif %}
+
+{% endblock %}

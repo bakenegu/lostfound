@@ -11,6 +11,21 @@
         <a class="navbar-brand" href="/">Lost & Found</a>
         <div class="d-flex">
             {% if user.is_authenticated %}
+            {% if user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link position-relative" href="{% url 'notifications' %}">
+                🔔 Notifications
+                {% with match_count=user.userprofile.match_count %}
+                  {% if match_count > 0 %}
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                      {{ match_count }}
+                    </span>
+                  {% endif %}
+                {% endwith %}
+              </a>
+            </li>
+          {% endif %}
+          
                 <a class="btn btn-outline-light me-2" href="{% url 'item_list' %}">Browse</a>
                 <a class="btn btn-outline-light me-2" href="{% url 'report_lost' %}">Report Lost</a>
                 <a class="btn btn-outline-light me-2" href="{% url 'report_found' %}">Report Found</a>

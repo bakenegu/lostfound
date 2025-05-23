@@ -9,6 +9,7 @@ from .models import Match
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login
+from django.db import models
 
 def home(request):
     return render(request, 'home.html')
@@ -116,4 +117,17 @@ def admin_panel(request):
     return render(request, 'admin_panel.html', {
         'lost_items': lost_items,
         'found_items': found_items,
+    })
+
+
+@login_required
+def notification_page(request):
+    # Show matches where the user reported either the lost or the found item
+    matches = Match.objects.filter(
+        models.Q(lost_item__user=request.user) |
+        models.Q(found_item__user=request.user)
+    ).order_by('-timestamp')
+
+    return render(request, 'core/notifications.html', {
+        'matches': matches
     })
